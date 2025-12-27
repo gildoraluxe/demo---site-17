@@ -1,0 +1,163 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+const servicesData = {
+  booking: {
+    title: "AI Booking & Viewing Systems",
+    description: "A fully deployable booking system that allows prospects to schedule viewings, consultations, or calls in real time.",
+    bullets: [
+      "Live availability scheduling",
+      "Automatic confirmation emails",
+      "Calendar sync (Google / Outlook)",
+      "Admin management panel"
+    ]
+  },
+  lead: {
+    title: "Lead Qualification & Routing",
+    description: "Automatically qualify inbound leads and route them to the correct agent or sales pipeline.",
+    bullets: [
+      "Custom qualification questions",
+      "High / Medium / Low intent scoring",
+      "Instant agent notifications",
+      "CRM-ready data structure"
+    ]
+  },
+  crm: {
+    title: "CRM & Sales Automation",
+    description: "A lightweight CRM system tailored specifically for brokers and developers.",
+    bullets: [
+      "Lead status tracking",
+      "Deal pipeline stages",
+      "Notes & follow-ups",
+      "Exportable data"
+    ]
+  }
+};
+
+export default function RealEstateAIWebsite() {
+  const [page, setPage] = useState("home");
+  const [activeService, setActiveService] = useState(null);
+  const [bookingForm, setBookingForm] = useState({ name: '', email: '', date: '' });
+
+  const Nav = () => (
+    <nav className="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-50">
+      <div className="text-2xl font-bold cursor-pointer" onClick={() => setPage("home")}>Aurelius Realty Group</div>
+      <div className="space-x-6 text-sm">
+        <button onClick={() => setPage("home")}>Home</button>
+        <button onClick={() => setPage("services")}>Services</button>
+        <button onClick={() => setPage("developments")}>Developments</button>
+        <button onClick={() => setPage("testimonials")}>Testimonials</button>
+        <button onClick={() => setPage("book")}>Book</button>
+      </div>
+    </nav>
+  );
+
+  const Home = () => (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-12 space-y-16">
+      <section className="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h1 className="text-5xl font-bold mb-6">Luxury Real Estate, Engineered With Intelligence</h1>
+          <p className="text-lg mb-6">We design and deploy intelligent systems that help real estate firms close faster and operate leaner.</p>
+          <Button onClick={() => setPage("services")}>Explore Services</Button>
+        </div>
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" className="rounded-2xl shadow-xl" />
+      </section>
+    </motion.div>
+  );
+
+  const Services = () => (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-12 space-y-10">
+      <h2 className="text-4xl font-bold">Core Services</h2>
+      <div className="grid md:grid-cols-3 gap-6">
+        {Object.entries(servicesData).map(([key, service]) => (
+          <Card
+            key={key}
+            className="rounded-2xl shadow cursor-pointer hover:scale-[1.02] transition"
+            onClick={() => {
+              setActiveService(key);
+              setPage("service-detail");
+            }}
+          >
+            <CardContent className="p-6">
+              <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
+              <p className="text-sm text-gray-600">{service.description}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </motion.div>
+  );
+
+  const ServiceDetail = () => {
+    const service = servicesData[activeService];
+    if (!service) return null;
+
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-12 max-w-4xl space-y-8">
+        <Button variant="outline" onClick={() => setPage("services")}>← Back to Services</Button>
+        <h2 className="text-4xl font-bold">{service.title}</h2>
+        <p className="text-lg text-gray-600">{service.description}</p>
+        <ul className="list-disc pl-6 space-y-2">
+          {service.bullets.map((b) => (<li key={b}>{b}</li>))}
+        </ul>
+        <div className="border p-6 rounded-2xl">
+          <h3 className="text-xl font-semibold mb-2">Live Demo</h3>
+          {activeService === "booking" && (
+            <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); alert('Booking submitted!'); }}>
+              <input className="w-full border p-3 rounded" placeholder="Name" value={bookingForm.name} onChange={e => setBookingForm({...bookingForm, name: e.target.value})} required />
+              <input className="w-full border p-3 rounded" placeholder="Email" value={bookingForm.email} onChange={e => setBookingForm({...bookingForm, email: e.target.value})} required />
+              <input type="date" className="w-full border p-3 rounded" value={bookingForm.date} onChange={e => setBookingForm({...bookingForm, date: e.target.value})} required />
+              <Button type="submit">Book Viewing</Button>
+            </form>
+          )}
+          {activeService === "lead" && (
+            <div className="space-y-3">
+              <select className="w-full border p-3 rounded"><option>Budget £500k+</option></select>
+              <select className="w-full border p-3 rounded"><option>Timeline: 0–3 months</option></select>
+              <Button onClick={() => alert('Lead scored!')}>Calculate Lead Score</Button>
+            </div>
+          )}
+          {activeService === "crm" && (
+            <table className="w-full text-sm border">
+              <thead><tr><th className="border p-2">Lead</th><th className="border p-2">Stage</th></tr></thead>
+              <tbody>
+                <tr><td className="border p-2">John Smith</td><td className="border p-2">Qualified</td></tr>
+                <tr><td className="border p-2">Sarah Lee</td><td className="border p-2">Viewing Scheduled</td></tr>
+              </tbody>
+            </table>
+          )}
+        </div>
+        <Button onClick={() => setPage("book")}>Request This Service</Button>
+      </motion.div>
+    );
+  };
+
+  const Developments = () => (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-12"><h2 className="text-4xl font-bold">Developments</h2></motion.div>);
+  const Testimonials = () => (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-12"><h2 className="text-4xl font-bold">Testimonials</h2></motion.div>);
+
+  const Booking = () => (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-12 max-w-xl">
+      <h2 className="text-3xl font-bold mb-4">Book a Consultation</h2>
+      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Consultation request submitted!'); }}>
+        <input className="w-full border p-3 rounded" placeholder="Name" required />
+        <input className="w-full border p-3 rounded" placeholder="Email" required />
+        <Button type="submit">Submit</Button>
+      </form>
+    </motion.div>
+  );
+
+  return (
+    <div className="min-h-screen">
+      <Nav />
+      {page === "home" && <Home />}
+      {page === "services" && <Services />}
+      {page === "service-detail" && <ServiceDetail />}
+      {page === "developments" && <Developments />}
+      {page === "testimonials" && <Testimonials />}
+      {page === "book" && <Booking />}
+      <footer className="border-t p-6 text-sm text-gray-500 text-center">© {new Date().getFullYear()} Aurelius Realty Group</footer>
+    </div>
+  );
+}
